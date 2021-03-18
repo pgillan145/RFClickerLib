@@ -13,6 +13,8 @@
 #define BUTTON2         2
 #define BUTTON3         4
 #define BUTTON4         8
+#define BUTTON5         16
+#define BUTTON6         32
 
 #define ADDBUTTON(x,y)  x |= y
 #define CLRBUTTON(x,y)  x &= ~y
