@@ -9,6 +9,13 @@
  */
 
 #define HISTORY_LENGTH  10 
+#define BUTTONSVC_UUID  "1110"
+#define BUTTONCHAR_UUID "1111"
+#define MENUCHAR_UUID   "1112"
+#define AUDIOSVC_UUID   "2110"
+#define VOLUMECHAR_UUID "2111"
+#define MENU_DELIM      '|'
+#define MENU_MAX_CHARS  5
 #define BUTTON1         1
 #define BUTTON2         2
 #define BUTTON3         4
