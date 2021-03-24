@@ -1,36 +1,41 @@
-/*
 #include <RFClickerLib.h>
 
-BLEService buttonService("1101");
-BLEByteCharacteristic buttonChar("2101", BLERead | BLEWrite);
+BLEService buttonService(BUTTONSVC_UUID);
+BLEByteCharacteristic buttonChar(BUTTONCHAR_UUID, BLERead | BLEWrite | BLENotify);
+BLEStringCharacteristic menuChar(MENUCHAR_UUID, BLERead | BLENotify, 25);
 
-void RFClickerSetup() { //char *history) {
+void RFClickerLibSetup(String name, void onBLEWrite (BLEDevice, BLECharacteristic)) { //char *history) {
   BLE.begin();
-  BLE.scanForName("RFClicker");
-  //arrayFill(0, history, HISTORY_LENGTH);
 
-  BLE.setDeviceName("DEVICENAME");
-  BLE.setLocalName("LOCALNAME");
+  BLE.setDeviceName(name.c_str());
+  BLE.setLocalName(name.c_str());
+  BLE.setAppearance(APPEARANCE);
   BLE.setAdvertisedService(buttonService);
   buttonService.addCharacteristic(buttonChar);
+  buttonService.addCharacteristic(menuChar);
   BLE.addService(buttonService);
-  BLE.setEventHandler(BLEConnected, onConnect);
-  BLE.setEventHandler(BLEDisconnected, onDisconnect);
-  buttonChar.setEventHandler(BLEWritten, RFClickerButtonClick);
-  buttonChar.setValue(0);
   BLE.advertise();
-  Serial.println("Bluetooth device active, waiting for connections...");
+  
+  BLE.setEventHandler(BLEConnected, onBLEConnect);
+  BLE.setEventHandler(BLEDisconnected, onBLEDisconnect);
+  buttonChar.setEventHandler(BLEWritten, onBLEWrite);
+  buttonChar.writeValue(0);
+  writeMenu("L|D|R|U");
+  Serial.println("Bluetooth active");
 }
 
-void onConnect(BLEDevice central) {
+void onBLEConnect(BLEDevice central) {
   Serial.print("connected to ");
   Serial.println(central.address());
   digitalWrite(LED_BUILTIN, HIGH);
 }
 
-void onDisconnect(BLEDevice central) {
+void onBLEDisconnect(BLEDevice central) {
   Serial.print("disconnected from ");
   Serial.println(central.address());
   digitalWrite(LED_BUILTIN, LOW);
 }
-*/
+
+void writeMenu(String menu) {
+  menuChar.writeValue(menu);
+}
